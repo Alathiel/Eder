@@ -39,9 +39,13 @@ export default class Home extends React.Component {
 		let value = this.state.currency + this.state.value;
 		console.log(name + "  " + value);
 		let date = new Date();
+		try{
 		db.transaction(function (txn) {
 			txn.executeSql("INSERT INTO 'records' VALUES('" + name + "','" + value + "'," + date.getDate() + "," + date.getUTCMonth() + "," + date.getFullYear() + ")",[]);
 		});
+		}catch(error ){
+			console.error(error);
+		}
 		this.loadDatas();
 	}
 
@@ -55,9 +59,9 @@ export default class Home extends React.Component {
 						for (let i = 0; i < len; i++) {
 							let row = res.rows.item(i);
 							rows [i] = row;
+							resolve(rows);
 						}
 					});
-					resolve(rows);
 				});
 			}, 2000);
 		});
@@ -68,12 +72,12 @@ export default class Home extends React.Component {
 		.catch((err) => { console.error(err); });
 		this.forceRemount();
 		this.setState({render:true});
-		console.log(datas);
+		console.log(datas.length);
 	}
 
 	DynamicRender(){
 		if(this.state.render){
-			if(datas.length > 0){
+			if(datas.length >= 0){
 				return(<>
 					<ScrollView key={this.state.reload} locked={true} style={styles.list}>
 						{
@@ -82,26 +86,35 @@ export default class Home extends React.Component {
 								<View style={{flexDirection:'row', justifyContent: 'space-between',}}>
 									<Text h4>{l.title}</Text>
 									<Text>{l.value}</Text>
-									<Text>{l.month}</Text>
+									<Text>{l.day}</Text>
 								</View>
 								<Divider/>
 								</>
 							))
 						}
 					</ScrollView>
+
 					<View style={styles.fixedButton}>
-					<TouchableWithoutFeedback onPress={() => this.setState({visible:true})}>
-						<Icon name='pluscircle' type='antdesign'/>
-					</TouchableWithoutFeedback>
-				</View>
+						<TouchableWithoutFeedback onPress={() => this.setState({visible:true})}>
+							<Icon name='pluscircle' type='antdesign'/>
+						</TouchableWithoutFeedback>
+					</View>
 					</>
 				);
 			}
 			else{
 				return(
-					<View style={{justifyContent:'center', alignContent:'center'}}>
-						<Text style={{fontSize:25}}>So Empty try to add something </Text>
-					</View>
+					<>
+						<View style={{justifyContent:'center', alignContent:'center'}}>
+							<Text style={{fontSize:25}}>So Empty try to add something </Text>
+						</View>
+
+						<View style={styles.fixedButton}>
+							<TouchableWithoutFeedback onPress={() => this.setState({visible:true})}>
+								<Icon name='pluscircle' type='antdesign'/>
+							</TouchableWithoutFeedback>
+						</View>
+					</>
 				);
 			}
 		}
