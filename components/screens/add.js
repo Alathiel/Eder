@@ -2,92 +2,93 @@
 /* eslint-disable keyword-spacing */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {View, ScrollView, ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
+import {View} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {Text, Input, Button} from 'react-native-elements';
 import NavigationService from '../utils/NavigationService';
-import styles from '../utils/style';
-import {ListItem, Icon} from 'react-native-elements';
-import SQLite from 'react-native-sqlite-2';
 
-const db = SQLite.openDatabase('records.db', '1.0', '', 1);
-var datas = [];
+const Realm = require('realm');
+import {ExpenseSchema} from '../utils/schemas';
+import styles from '../utils/style';
+import { BackHandler } from 'react-native';
 
 export default class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            render: false,
-			reload:0,
+			nameErr:false,
+            numErr:false,
+			realm: null,
+			name:'',
+			value:'',
+			currency:'',
         };
-		this.loadDatas();
     }
 
-	forceRemount = () => {
-        this.setState(({ reload }) => ({
-          reload: reload + 1,
-        }));
-    }
-
-	getDatas(){
-		return new Promise(resolve => {
-			setTimeout(() => {
-				db.transaction(function (txn) {
-					txn.executeSql('SELECT * FROM `records`', [], function (tx, res) {
-						var len = res.rows.length;
-						var rows = [];
-						for (let i = 0; i < len; i++) {
-							let row = res.rows.item(i);
-							rows [i] = row;
-						}
-						resolve(rows);
-					});
-				});
-			}, 2000);
+	setDatas(){
+		let name = this.state.name;
+		let value = this.state.currency + this.state.value;
+		let date = new Date();
+		Realm.open({schema: [ExpenseSchema]})
+		.then(realm => {
+			realm.write(() => {
+				realm.create('Expense', {name: name, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear()});
+			});
+			this.setState({ realm });
 		});
 	}
 
-	async loadDatas(){
-		datas = await this.getDatas()
-		.catch((err) => { console.error(err); });
-		this.setState({render:true});
-		console.log(datas);
-	}
-
-	DynamicRender(){
-		if(this.state.render){
-			return(<>
-				<ScrollView key={this.state.reload} locked={true} style={styles.list}>
-					{
-						datas.map((l, i) => (
-							<ListItem
-								key={i}
-								//leftAvatar={{ source: { uri: l.avatar_url } }}
-								title={l.title}
-								subtitle={l.value}
-								bottomDivider
-								/*rightIcon={
-									<TouchableWithoutFeedback data-id={i} onPress={() => this.setState({ isVisible: true, index: l.index})}>
-										<Icon name="menu" type="material-icons"/>
-									</TouchableWithoutFeedback>
-								}*/
-								onPress={() => this.props.navigation.navigate('Site',{url: l.url})}
-								onLongPress={() => this.setState({ isVisible: true, index: l.index})}/>
-						))
-					}
-				</ScrollView>
-				<View style = {styles.footer}>
-						<TouchableWithoutFeedback onPress={() => this.props.navigation.navigate()}>
-							<Icon name='PlusCircleOutlined' type='antdesign'/>
-						</TouchableWithoutFeedback>
-				</View>
-				</>
+	DynamicNameInput(){
+		if(this.state.nameErr){
+			return(
+				<Input
+					placeholder='Expense name'
+					label = 'Name'
+					errorStyle={{ color: 'red' }}
+					errorMessage='ENTER A VALUE'
+					renderErrorMessage = {this.state.nameError}
+					onChangeText={value => this.setState({ name:value})}
+					containerStyle={{minWidth:'100%'}}
+				/>
 			);
 		}
-
 		else{
-			return (
-				<View style={{justifyContent:'center', alignContent:'center',minHeight:'100%'}}>
-                    <ActivityIndicator size="large" color="#0000ff"/>
-                </View>
+			return(
+				<Input
+					placeholder='Expense name'
+					label = 'Name'
+					onChangeText={value => this.setState({ name:value})}
+					containerStyle={{minWidth:'100%'}}
+				/>
+			);
+		}
+	}
+
+	DynamicNumbInput(){
+		if(this.state.numErr){
+			return(
+				<Input
+					placeholder='Expense value'
+					label = 'Value'
+					errorStyle={{ color: 'red' }}
+					errorMessage='ENTER A NUMERIC VALUE'
+					renderErrorMessage = {this.state.numError}
+					onChangeText={value => this.setState({ value:value})}
+					containerStyle={{minWidth:'100%'}}
+					keyboardType='numeric'
+				/>
+			);
+		}
+		else{
+			return(
+				<Input
+					placeholder='Expense value'
+					label = 'Value'
+					renderErrorMessage = {this.state.error}
+					onChangeText={value => this.setState({ value:value})}
+					containerStyle={{minWidth:'100%'}}
+					keyboardType='numeric'
+				/>
 			);
 		}
 	}
@@ -95,7 +96,33 @@ export default class Home extends React.Component {
 	render(){
 		return(
 			<View style = {styles.container}>
-				{this.DynamicRender()}
+				<View style = {{maxHeight:'90%',minHeight:'80%', maxWidth:'90%' ,borderColor:'#eeee',borderWidth:1, justifyContent:'center', alignItems: 'center',}}>
+					<Text h3 style={{textAlign:'center'}}>Add an expense</Text>
+					<View style={{minWidth:'100%', paddingBottom:100}}>
+						{this.DynamicNameInput()}
+						{this.DynamicNumbInput()}
+						<Picker selectedValue={this.state.currency}
+						onValueChange={(itemValue, itemIndex) => {this.setState({currency: itemValue});}}>
+							<Picker.Item label="EUR" value="€" />
+							<Picker.Item label="USD" value="$" />
+						</Picker>
+					</View>
+
+					<Button title="Add"
+						containerStyle={{maxWidth:'50%', minWidth:'50%'}}
+						onPress={() => {
+							if(this.state.name === ''){
+								this.setState({nameErr: true});
+							}
+							else if(isNaN(this.state.value)){
+								this.setState({numErr: true});
+							}
+							else{
+								this.setDatas();
+							}
+						}}
+					/>
+				</View>
 			</View>
 		);
 	}

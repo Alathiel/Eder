@@ -12,7 +12,7 @@ import add from '../screens/add';
 const AppStack = createStackNavigator(
   {
     Home: home,
-	AddRecord: add,
+	AddExpense: add,
   },
   {
     initialRouteName: 'Home',
