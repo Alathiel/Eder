@@ -36,10 +36,6 @@ export default class Home extends React.Component {
 
 	initRealm(){
 
-		const {realm} = this.state;
-		if (realm !== null && !realm.isClosed) {
-		  realm.close();
-		}
 
 		return new Promise((resolve,regect) => {
 			setTimeout(() => {
@@ -57,10 +53,7 @@ export default class Home extends React.Component {
 		let value = this.state.currency + this.state.value;
 		console.log(name + "  " + value);
 		let date = new Date();
-		const {realm} = this.state;
-		if (realm !== null && !realm.isClosed) {
-		  realm.close();
-		}
+		
 
 		Realm.open({
 			schema: [CarSchema]
