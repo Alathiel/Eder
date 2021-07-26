@@ -8,10 +8,9 @@ import {View, ScrollView, ActivityIndicator, TouchableWithoutFeedback} from 'rea
 import NavigationService from '../utils/NavigationService';
 import styles from '../utils/style';
 import {Divider, Icon, Overlay, Text, Input, Button} from 'react-native-elements';
-import SQLite from 'react-native-sqlite-2';
+const Realm = require('realm');
 import {Picker} from '@react-native-picker/picker';
-const db = SQLite.openDatabase('records.db', '1.0', '', 1);
-var datas = [];
+import {CarSchema} from '../utils/schemas';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -21,9 +20,10 @@ export default class Home extends React.Component {
 			reload: 0,
 			visible: false,
 			error: false,
-				name:'',
-				value:'',
-				currency:'',
+			name:'',
+			value:'',
+			currency:'',
+			realm: null,
         };
 		this.loadDatas();
     }
@@ -34,55 +34,68 @@ export default class Home extends React.Component {
         }));
     }
 
+	initRealm(){
+
+		const {realm} = this.state;
+		if (realm !== null && !realm.isClosed) {
+		  realm.close();
+		}
+
+		return new Promise((resolve,regect) => {
+			setTimeout(() => {
+		Realm.open({
+			schema: [CarSchema]
+		  }).then(realm => {
+			resolve(this.setState({ realm:realm }));
+		  });}, 2000);
+		});
+	}
+
+
 	setDatas(){
 		let name = this.state.name;
 		let value = this.state.currency + this.state.value;
 		console.log(name + "  " + value);
 		let date = new Date();
-		db.transaction(function (txn) {
-			txn.executeSql("INSERT INTO 'records' VALUES('" + name + "','" + value + "'," + date.getDate() + "," + date.getUTCMonth() + "," + date.getFullYear() + ")",[]);
-		});
+		const {realm} = this.state;
+		if (realm !== null && !realm.isClosed) {
+		  realm.close();
+		}
+
+		Realm.open({
+			schema: [CarSchema]
+		  }).then(realm => {
+			realm.write(() => {
+			  realm.create('Car', {make: name, model: value});
+			});
+			this.setState({ realm });
+		  });
 		this.loadDatas();
 	}
 
-	getDatas(){
-		return new Promise((resolve,regect) => {
-			var rows = [];
-			setTimeout(() => {
-				db.transaction(function (txn) {
-					txn.executeSql('SELECT * FROM `records`', [], function (tx, res) {
-						var len = res.rows.length;
-						for (let i = 0; i < len; i++) {
-							let row = res.rows.item(i);
-							rows [i] = row;
-						}
-					});
-					resolve(rows);
-				});
-			}, 2000);
-		});
-	}
-
 	async loadDatas(){
-		datas = await this.getDatas()
-		.catch((err) => { console.error(err); });
+		//datas = await this.getDatas()
+		//.catch((err) => { console.error(err); });
+		console.log('aa');
+		await(this.initRealm());
+		console.log(this.state.realm.objects('Car'));
+		if (this.state.realm != null){
 		this.forceRemount();
-		this.setState({render:true});
-		console.log(datas);
+		this.setState({render:true});}
 	}
 
 	DynamicRender(){
 		if(this.state.render){
-			if(datas.length > 0){
+			if(this.state.realm.objects('Car') != null){
 				return(<>
-					<ScrollView key={this.state.reload} locked={true} style={styles.list}>
+					<ScrollView locked={true} style={styles.list}>
 						{
-							datas.map((l, i) => (
+							this.state.realm.objects('Car').map((l, i) => (
 								<>
-								<View style={{flexDirection:'row', justifyContent: 'space-between',}}>
-									<Text h4>{l.title}</Text>
-									<Text>{l.value}</Text>
-									<Text>{l.month}</Text>
+								<View key={i} style={{flexDirection:'row', justifyContent: 'space-between',}}>
+									<Text h4>{l.model}   {i}</Text>
+									<Text>{l.miles}</Text>
+									<Text>{l.make}</Text>
 								</View>
 								<Divider/>
 								</>
@@ -99,9 +112,15 @@ export default class Home extends React.Component {
 			}
 			else{
 				return(
+					<>
 					<View style={{justifyContent:'center', alignContent:'center'}}>
 						<Text style={{fontSize:25}}>So Empty try to add something </Text>
 					</View>
+					<View style={styles.fixedButton}>
+					<TouchableWithoutFeedback onPress={() => this.setState({visible:true})}>
+						<Icon name='pluscircle' type='antdesign'/>
+					</TouchableWithoutFeedback>
+				</View></>
 				);
 			}
 		}
@@ -117,7 +136,7 @@ export default class Home extends React.Component {
 
 	render(){
 		return(
-			<View style = {styles.container}>
+			<View style = {styles.container} key={this.state.reload}>
 				<Overlay isVisible={this.state.visible} onBackdropPress={() => this.setState({visible: false})} overlayStyle = {styles.overlay}>
 					<Text h3 style={{textAlign:'center'}}>Add an expense</Text>
 					<View style={{minWidth:'100%', paddingBottom:100}}>
