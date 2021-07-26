@@ -10,7 +10,7 @@ import styles from '../utils/style';
 import {Divider, Icon, Overlay, Text, Input, Button} from 'react-native-elements';
 const Realm = require('realm');
 import {Picker} from '@react-native-picker/picker';
-import {CarSchema} from '../utils/schemas';
+import {ExpenseSchema} from '../utils/schemas';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -34,16 +34,13 @@ export default class Home extends React.Component {
         }));
     }
 
-	initRealm(){
-
-
+	loadRealmDatas(){
 		return new Promise((resolve,regect) => {
 			setTimeout(() => {
-		Realm.open({
-			schema: [CarSchema]
-		  }).then(realm => {
-			resolve(this.setState({ realm:realm }));
-		  });}, 2000);
+				Realm.open({schema: [ExpenseSchema]})
+				.then(realm => {
+					resolve(this.setState({ realm:realm }));
+				});}, 2000);
 		});
 	}
 
@@ -51,44 +48,37 @@ export default class Home extends React.Component {
 	setDatas(){
 		let name = this.state.name;
 		let value = this.state.currency + this.state.value;
-		console.log(name + "  " + value);
 		let date = new Date();
-		
-
-		Realm.open({
-			schema: [CarSchema]
-		  }).then(realm => {
+		Realm.open({schema: [ExpenseSchema]})
+		.then(realm => {
 			realm.write(() => {
-			  realm.create('Car', {make: name, model: value});
+				realm.create('Expense', {name: name, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear()});
 			});
 			this.setState({ realm });
-		  });
-		this.loadDatas();
+		});
+		this.forceRemount();
 	}
 
 	async loadDatas(){
-		//datas = await this.getDatas()
-		//.catch((err) => { console.error(err); });
-		console.log('aa');
-		await(this.initRealm());
-		console.log(this.state.realm.objects('Car'));
-		if (this.state.realm != null){
-		this.forceRemount();
-		this.setState({render:true});}
+		await (this.loadRealmDatas());
+		if (this.state.realm.objects('Expense') != null){
+			this.forceRemount();
+			this.setState({render:true});
+		}
 	}
 
 	DynamicRender(){
 		if(this.state.render){
-			if(this.state.realm.objects('Car') != null){
+			if(this.state.realm.objects('Expense').length > 0){
 				return(<>
 					<ScrollView locked={true} style={styles.list}>
 						{
-							this.state.realm.objects('Car').map((l, i) => (
+							this.state.realm.objects('Expense').map((l, i) => (
 								<>
 								<View key={i} style={{flexDirection:'row', justifyContent: 'space-between',}}>
-									<Text h4>{l.model}   {i}</Text>
-									<Text>{l.miles}</Text>
-									<Text>{l.make}</Text>
+									<Text h4>{l.name}</Text>
+									<Text>{l.value}</Text>
+									<Text>{l.day}</Text>
 								</View>
 								<Divider/>
 								</>
@@ -106,7 +96,7 @@ export default class Home extends React.Component {
 			else{
 				return(
 					<>
-					<View style={{justifyContent:'center', alignContent:'center'}}>
+					<View style={{justifyContent:'center', alignContent:'center', minHeight:'80%'}}>
 						<Text style={{fontSize:25}}>So Empty try to add something </Text>
 					</View>
 					<View style={styles.fixedButton}>
@@ -120,7 +110,7 @@ export default class Home extends React.Component {
 
 		else{
 			return (
-				<View style={{justifyContent:'center', alignContent:'center'}}>
+				<View style={{justifyContent:'center', alignContent:'center', minHeight:'80%'}}>
                     <ActivityIndicator size="large" color="#0000ff"/>
                 </View>
 			);

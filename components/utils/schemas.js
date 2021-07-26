@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
-const CarSchema = {
-	name: 'Car',
+const ExpenseSchema = {
+	name: 'Expense',
 	properties: {
-	  make:  {type: 'string', default: null},
-	  model: {type: 'string', default: null},
-	  miles: {type: 'int', default: 0},
-	}
+		name:  {type: 'string', default: null},
+		value: {type: 'string', default: null},
+		day: {type: 'int', default: 0},
+		month: {type: 'int', default: 0},
+		year: {type: 'int', default: 0},
+	},
 };
 
 
-export {CarSchema}
+export {ExpenseSchema}
