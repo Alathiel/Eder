@@ -4,9 +4,9 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import {Text, Input, Button} from 'react-native-elements';
+import {Text} from 'react-native-elements';
+import { TextInput, Button} from 'react-native-paper';
 import NavigationService from '../utils/NavigationService';
-
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
@@ -21,7 +21,7 @@ export default class Home extends React.Component {
 			realm: null,
 			name:'',
 			value:'',
-			currency:'',
+			currency:'€',
         };
     }
 
@@ -41,24 +41,22 @@ export default class Home extends React.Component {
 	DynamicNameInput(){
 		if(this.state.nameErr){
 			return(
-				<Input
+				<TextInput
 					placeholder='Expense name'
 					label = 'Name'
-					errorStyle={{ color: 'red' }}
-					errorMessage='ENTER A VALUE'
-					renderErrorMessage = {this.state.nameError}
+					error = {this.state.nameError}
+					style={{maxHeight:70, marginBottom:30}}
 					onChangeText={value => this.setState({ name:value})}
-					containerStyle={{minWidth:'100%'}}
 				/>
 			);
 		}
 		else{
 			return(
-				<Input
+				<TextInput
 					placeholder='Expense name'
 					label = 'Name'
+					style={{maxHeight:70, marginBottom:30}}
 					onChangeText={value => this.setState({ name:value})}
-					containerStyle={{minWidth:'100%'}}
 				/>
 			);
 		}
@@ -67,27 +65,24 @@ export default class Home extends React.Component {
 	DynamicNumbInput(){
 		if(this.state.numErr){
 			return(
-				<Input
+				<TextInput
 					placeholder='Expense value'
 					label = 'Value'
-					errorStyle={{ color: 'red' }}
-					errorMessage='ENTER A NUMERIC VALUE'
-					renderErrorMessage = {this.state.numError}
-					onChangeText={value => this.setState({ value:value})}
-					containerStyle={{minWidth:'100%'}}
+					error = {this.state.numError}
+					style={{maxHeight:70, marginBottom:30}}
+					onChangeText={value => this.setState({ value: value})}
 					keyboardType='numeric'
 				/>
 			);
 		}
 		else{
 			return(
-				<Input
+				<TextInput
 					placeholder='Expense value'
-					label = 'Value'
-					renderErrorMessage = {this.state.error}
-					onChangeText={value => this.setState({ value:value})}
-					containerStyle={{minWidth:'100%'}}
+					label='Value'
+					style={{maxHeight:70, marginBottom:30}}
 					keyboardType='numeric'
+					onChangeText={value => this.setState({ value: value})}
 				/>
 			);
 		}
@@ -96,11 +91,12 @@ export default class Home extends React.Component {
 	render(){
 		return(
 			<View style = {styles.container}>
-				<View style = {{maxHeight:'90%',minHeight:'80%', maxWidth:'90%' ,borderColor:'#eeee',borderWidth:1, justifyContent:'center', alignItems: 'center',}}>
-					<Text h3 style={{textAlign:'center'}}>Add an expense</Text>
+				<View style = {{maxHeight:'90%',minHeight:'80%', maxWidth:'90%', justifyContent:'center', alignItems: 'center',}}>
+					<Text h3 style={{textAlign:'center', marginBottom:30}}>Add an expense</Text>
 					<View style={{minWidth:'100%', paddingBottom:100}}>
 						{this.DynamicNameInput()}
 						{this.DynamicNumbInput()}
+
 						<Picker selectedValue={this.state.currency}
 						onValueChange={(itemValue, itemIndex) => {this.setState({currency: itemValue});}}>
 							<Picker.Item label="EUR" value="€" />
@@ -108,20 +104,23 @@ export default class Home extends React.Component {
 						</Picker>
 					</View>
 
-					<Button title="Add"
+					<Button
 						containerStyle={{maxWidth:'50%', minWidth:'50%'}}
+						mode="contained"
 						onPress={() => {
 							if(this.state.name === ''){
 								this.setState({nameErr: true});
 							}
-							else if(isNaN(this.state.value)){
+							else if(isNaN(this.state.value) || this.state.value === ''){
 								this.setState({numErr: true});
 							}
 							else{
 								this.setDatas();
 							}
 						}}
-					/>
+					>
+					Add Expense
+					</Button>
 				</View>
 			</View>
 		);
