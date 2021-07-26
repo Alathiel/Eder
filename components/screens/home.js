@@ -10,6 +10,8 @@ import { useIsFocused } from '@react-navigation/native';
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
+import { List } from 'react-native-paper';
+var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -52,18 +54,29 @@ export default class Home extends React.Component {
 			if(this.state.realm.objects('Expense').length > 0){
 				return(<>
 					<ScrollView locked={true} style={styles.list}>
-						{
-							this.state.realm.objects('Expense').filtered('month = ' + new Date().getUTCMonth()).map((l, i) => (
-								<>
-								<View key={i} style={{flexDirection:'row', justifyContent: 'space-between',}}>
-									<Text h4>{l.name}</Text>
-									<Text>{l.value}</Text>
-									<Text>{l.day}</Text>
-								</View>
-								<Divider/>
-								</>
-							))
-						}
+						<List.Section>
+							<List.Subheader>Expenses in {months[new Date().getMonth()]}</List.Subheader>
+							{
+								this.state.realm.objects('Expense').filtered('month = ' + new Date().getUTCMonth()).map((l, i) => (
+									/*<View style={{minWidth:'100%',maxWidth:'100%',minHeight:'5%'}}>
+										<View key={i} style={{flexDirection:'row', justifyContent: 'space-between',}}>
+											<Text h4>{l.name}</Text>
+											<Text>{l.value}</Text>
+											<Text>{l.day}</Text>
+										</View>
+										<Divider/>
+									</View>*/
+										<List.Item
+											title= {l.name}
+											description= {l.value}
+											left={props => <List.Icon {...props} icon="folder" />}
+											right={props => <Text>{l.day}</Text>}
+											onPress={() => {}}
+											onLongPress ={(value) => {console.log(value)}}
+										/>
+								))
+							}
+						</List.Section>
 					</ScrollView>
 					<View style={styles.fixedButton}>
 					<TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('AddExpense')}>

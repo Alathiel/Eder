@@ -7,7 +7,7 @@ var {StyleSheet} = React;
 
 module.exports = StyleSheet.create({
 	container:{
-		paddingTop: 20,
+		paddingTop: 10,
 		minHeight: '100%',
 		minWidth: '100%',
 		maxHeight:'100%',
