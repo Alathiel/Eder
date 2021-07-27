@@ -55,4 +55,9 @@ module.exports = StyleSheet.create({
 		alignContent: "center",
 		justifyContent: "center",
 	},
+
+	list_icon:{
+		paddingTop:15,
+		paddingRight:5,
+	},
 });

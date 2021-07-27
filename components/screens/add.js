@@ -2,15 +2,15 @@
 /* eslint-disable keyword-spacing */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {View} from 'react-native';
+import {View, BackHandler} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Text} from 'react-native-elements';
 import { TextInput, Button} from 'react-native-paper';
+import { StackActions } from '@react-navigation/native';
 import NavigationService from '../utils/NavigationService';
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
-import { BackHandler } from 'react-native';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -25,6 +25,8 @@ export default class Home extends React.Component {
         };
     }
 
+	static navigationOptions = {title: ''};
+
 	setDatas(){
 		let name = this.state.name;
 		let value = this.state.currency + this.state.value;
@@ -32,10 +34,10 @@ export default class Home extends React.Component {
 		Realm.open({schema: [ExpenseSchema]})
 		.then(realm => {
 			realm.write(() => {
-				realm.create('Expense', {name: name, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear()});
+				realm.create('Expense', {name: name, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear(), cDate: date});
 			});
-			this.setState({ realm });
 		});
+		this.props.navigation.goBack();
 	}
 
 	DynamicNameInput(){

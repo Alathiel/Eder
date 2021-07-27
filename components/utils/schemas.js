@@ -7,6 +7,7 @@ const ExpenseSchema = {
 		day: {type: 'int', default: 0},
 		month: {type: 'int', default: 0},
 		year: {type: 'int', default: 0},
+		cDate: {type: 'date'},
 	},
 };
 
