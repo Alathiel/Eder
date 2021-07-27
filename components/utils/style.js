@@ -20,8 +20,8 @@ module.exports = StyleSheet.create({
 	list:{
 		minWidth: '95%',
 		maxWidth: '95%',
-		minHeight: '95%',
-		maxHeight: '95%',
+		minHeight: '99%',
+		maxHeight: '99%',
 	},
 
 	footer:{

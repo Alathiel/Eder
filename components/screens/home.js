@@ -58,21 +58,25 @@ export default class Home extends React.Component {
 					<ScrollView locked={true} style={styles.list}
 						refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 					>
-						<List.Section>
-							<List.Subheader>Expenses in {months[new Date().getMonth()]}</List.Subheader>
-							{
-								this.state.realm.objects('Expense').filtered('month = ' + new Date().getUTCMonth() + ' SORT(cDate DESC)').map((l, i) => (
-									<List.Item
-										title= {l.name}
-										description= {l.value}
-										left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
-										right={props => <Text style = {{paddingTop:10}}>{months[l.month] + '\n' + l.day}</Text>}
-										onPress={() => {}}
-										onLongPress ={(value) => {console.log(value)}}
-									/>
-								))
-							}
-						</List.Section>
+						{
+							this.state.realm.objects('Expense').filtered('TRUEPREDICATE SORT(month DESC) DISTINCT(month)').map((x, i) => (
+								<List.Section>
+									<List.Subheader>Expenses in {months[x.month] + "  " + x.year}</List.Subheader>
+									{
+										this.state.realm.objects('Expense').filtered('month ='+ x.month + ' SORT(cDate DESC)').map((l, ind) => (
+											<List.Item
+												title= {l.name}
+												description= {l.value}
+												left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
+												right={props => <Text style = {{paddingTop:10}}>{months[l.month] + '\n' + l.day}</Text>}
+												onPress={() => {}}
+												onLongPress ={(value) => {console.log(value)}}
+											/>
+										))
+									}
+								</List.Section>
+							))
+						}
 					</ScrollView>
 					<View style={styles.fixedButton}>
 					<TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('AddExpense')}>
