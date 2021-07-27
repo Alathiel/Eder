@@ -5,7 +5,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, ScrollView, ActivityIndicator, TouchableWithoutFeedback, RefreshControl} from 'react-native';
-import {Icon, Text} from 'react-native-elements';
+import {Icon, Text, Divider} from 'react-native-elements';
 import { List } from 'react-native-paper';
 
 const Realm = require('realm');
@@ -76,8 +76,9 @@ export default class Home extends React.Component {
 											))
 										}
 										<List.Subheader style={{textAlign:'right'}}>
-											Total Spent {x.currency + this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year).sum('value')}
+											Total Spent {x.currency + parseFloat(this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year).sum('value'))}
 										</List.Subheader>
+										<Divider/>
 									</List.Section>
 								))
 							))

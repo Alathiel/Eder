@@ -4,7 +4,7 @@ const ExpenseSchema = {
 	properties: {
 		name:  {type: 'string', default: null},
 		currency: {type: 'string', default: '€'},
-		value: {type: 'int', default: null},
+		value: {type: 'double', default: null},
 		day: {type: 'int', default: 0},
 		month: {type: 'int', default: 0},
 		year: {type: 'int', default: 0},

@@ -29,7 +29,7 @@ export default class Home extends React.Component {
 
 	setDatas(){
 		let name = this.state.name;
-		let value = parseInt(this.state.value);
+		let value =  parseFloat(this.state.value);
 		let currency = this.state.currency;
 		let date = new Date();
 		Realm.open({schema: [ExpenseSchema]})
