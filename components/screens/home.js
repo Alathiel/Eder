@@ -59,23 +59,27 @@ export default class Home extends React.Component {
 						refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 					>
 						{
-							this.state.realm.objects('Expense').filtered('TRUEPREDICATE SORT(month DESC) DISTINCT(month)').map((x, i) => (
-								<List.Section>
-									<List.Subheader>Expenses in {months[x.month] + "  " + x.year}</List.Subheader>
-									{
-										this.state.realm.objects('Expense').filtered('month ='+ x.month + ' SORT(cDate DESC)').map((l, ind) => (
-											<List.Item
-												title= {l.name}
-												description= {l.currency + l.value}
-												left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
-												right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
-												onPress={() => {}}
-												onLongPress ={(value) => {console.log(value)}}
-											/>
-										))
-									}
-									<List.Subheader style={{textAlign:'right'}}>Total Spent {x.currency + this.state.realm.objects('Expense').sum('value')}</List.Subheader>
-								</List.Section>
+							this.state.realm.objects('Expense').filtered('TRUEPREDICATE SORT(year DESC) DISTINCT(year)').map((y, i) => (
+								this.state.realm.objects('Expense').filtered('year=' + y.year + ' SORT(month DESC) DISTINCT(month)').map((x, i) => (
+									<List.Section>
+										<List.Subheader>Expenses in {months[x.month] + '	' + x.year}</List.Subheader>
+										{
+											this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year + ' SORT(cDate DESC)').map((l, ind) => (
+												<List.Item
+													title= {l.name}
+													description= {l.currency + l.value}
+													left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
+													right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
+													onPress={() => {}}
+													onLongPress ={(value) => {console.log(value)}}
+												/>
+											))
+										}
+										<List.Subheader style={{textAlign:'right'}}>
+											Total Spent {x.currency + this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year).sum('value')}
+										</List.Subheader>
+									</List.Section>
+								))
 							))
 						}
 					</ScrollView>
