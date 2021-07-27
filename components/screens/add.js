@@ -29,12 +29,13 @@ export default class Home extends React.Component {
 
 	setDatas(){
 		let name = this.state.name;
-		let value = this.state.currency + this.state.value;
+		let value = parseInt(this.state.value);
+		let currency = this.state.currency;
 		let date = new Date();
 		Realm.open({schema: [ExpenseSchema]})
 		.then(realm => {
 			realm.write(() => {
-				realm.create('Expense', {name: name, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear(), cDate: date});
+				realm.create('Expense', {name: name, currency: currency, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear(), cDate: date});
 			});
 		});
 		this.props.navigation.goBack();

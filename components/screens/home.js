@@ -66,14 +66,15 @@ export default class Home extends React.Component {
 										this.state.realm.objects('Expense').filtered('month ='+ x.month + ' SORT(cDate DESC)').map((l, ind) => (
 											<List.Item
 												title= {l.name}
-												description= {l.value}
+												description= {l.currency + l.value}
 												left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
-												right={props => <Text style = {{paddingTop:10}}>{months[l.month] + '\n' + l.day}</Text>}
+												right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
 												onPress={() => {}}
 												onLongPress ={(value) => {console.log(value)}}
 											/>
 										))
 									}
+									<List.Subheader style={{textAlign:'right'}}>Total Spent {x.currency + this.state.realm.objects('Expense').sum('value')}</List.Subheader>
 								</List.Section>
 							))
 						}
@@ -90,7 +91,7 @@ export default class Home extends React.Component {
 				return(
 					<>
 					<View style={{justifyContent:'center', alignContent:'center', minHeight:'80%'}}>
-						<ScrollView locked={true} style={{justifyContent:'center', alignContent:'center',minHeight:'100%',minWidth:'90%'}}
+						<ScrollView locked={true} style={{alignContent:'center',minHeight:'100%',minWidth:'90%'}}
 							refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 						>
 							<Text style={{fontSize:25}}>So Empty try to add something </Text>
