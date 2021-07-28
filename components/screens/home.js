@@ -76,7 +76,7 @@ export default class Home extends React.Component {
 											))
 										}
 										<List.Subheader style={{textAlign:'right'}}>
-											Total Spent {x.currency + parseFloat(this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year).sum('value'))}
+											Total Spent {x.currency + parseFloat(this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year).sum('value')).toFixed(2)}
 										</List.Subheader>
 										<Divider/>
 									</List.Section>
