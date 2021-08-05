@@ -12,9 +12,47 @@ import edit from '../screens/edit';
 
 const AppStack = createStackNavigator(
   {
-    Home: home,
-	AddExpense: add,
-	EditExpense: edit,
+	Home: {
+		screen: home,
+		navigationOptions:{
+			title: '',
+			headerStyle: {
+				position: 'absolute',
+				backgroundColor: 'transparent',
+				elevation: 0,
+				shadowOpacity: 0,
+				borderBottomWidth: 0,
+			},
+		},
+	},
+	AddExpense:{
+		screen: add,
+		title: '',
+		navigationOptions:{
+			title: '',
+			headerStyle: {
+				position: 'absolute',
+				backgroundColor: 'transparent',
+				elevation: 0,
+				shadowOpacity: 0,
+				borderBottomWidth: 0,
+			},
+		},
+	},
+	EditExpense:{ 
+		screen: edit,
+		title: '',
+		navigationOptions:{
+			title: '',
+			headerStyle: {
+				position: 'absolute',
+				backgroundColor: 'transparent',
+				elevation: 0,
+				shadowOpacity: 0,
+				borderBottomWidth: 0,
+			},
+		},
+	},
   },
   {
     initialRouteName: 'Home',

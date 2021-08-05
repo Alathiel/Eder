@@ -36,6 +36,15 @@ export default class Home extends React.Component {
 		this.loadDatas();
     }
 
+	static navigationOptions = ({navigation}) => {
+		return{
+			headerTitle: '',
+			headerLeft: () => (
+				<Icon name = "delete" type = "material-icons" style={{}}/>
+			),
+		};
+	};
+
 	forceRemount = () => {
         this.setState(({ reload }) => ({
           reload: reload + 1,
@@ -119,7 +128,7 @@ export default class Home extends React.Component {
 						<ScrollView locked={true} style={{alignContent:'center',minHeight:'100%',minWidth:'90%'}} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems:'center'}}
 							refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 						>
-							<Image source ={require('../images/tiger.png')}/>
+							<Image source ={require('../assets/tiger.png')}/>
 							<Text style={{fontSize:20}}>It feels so empty</Text>
 						</ScrollView>
 					</View>
