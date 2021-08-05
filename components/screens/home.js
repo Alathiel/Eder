@@ -36,14 +36,14 @@ export default class Home extends React.Component {
 		this.loadDatas();
     }
 
-	static navigationOptions = ({navigation}) => {
+	/*static navigationOptions = ({navigation}) => {
 		return{
 			headerTitle: '',
 			headerLeft: () => (
-				<Icon name = "delete" type = "material-icons" style={{}}/>
+				<Text>Eder</Text>
 			),
 		};
-	};
+	};*/
 
 	forceRemount = () => {
         this.setState(({ reload }) => ({

@@ -15,7 +15,7 @@ const AppStack = createStackNavigator(
 	Home: {
 		screen: home,
 		navigationOptions:{
-			title: '',
+			title: 'Eder',
 			headerStyle: {
 				position: 'absolute',
 				backgroundColor: 'transparent',
