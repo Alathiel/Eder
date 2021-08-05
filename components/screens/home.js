@@ -4,7 +4,17 @@
 /* eslint-disable keyword-spacing */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {View, ScrollView, ActivityIndicator, TouchableWithoutFeedback, RefreshControl} from 'react-native';
+import {
+		View,
+		ScrollView,
+		ActivityIndicator,
+		TouchableWithoutFeedback,
+		RefreshControl,
+		ToastAndroid,
+		AlertIOS,
+		Platform,
+		Image,
+	} from 'react-native';
 import {Icon, Text, Divider} from 'react-native-elements';
 import { List } from 'react-native-paper';
 
@@ -70,7 +80,17 @@ export default class Home extends React.Component {
 													description= {l.currency + l.value}
 													left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
 													right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
-													onPress={() => {}}
+													onPress={() => {
+														try{
+															this.props.navigation.navigate('EditExpense', {uuid: l.uuid, name: l.name, value: l.value, currency: l.currency});
+														}catch(error){
+															if (Platform.OS === 'android') {
+																ToastAndroid.show('The Expense not exist, try to reload', ToastAndroid.SHORT);
+															} else {
+																AlertIOS.alert('The Expense not exist, try to reload');
+															}
+														}
+													}}
 													onLongPress ={(value) => {console.log(value)}}
 												/>
 											))
@@ -96,10 +116,11 @@ export default class Home extends React.Component {
 				return(
 					<>
 					<View style={{justifyContent:'center', alignContent:'center', minHeight:'80%'}}>
-						<ScrollView locked={true} style={{alignContent:'center',minHeight:'100%',minWidth:'90%'}}
+						<ScrollView locked={true} style={{alignContent:'center',minHeight:'100%',minWidth:'90%'}} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems:'center'}}
 							refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 						>
-							<Text style={{fontSize:25}}>So Empty try to add something </Text>
+							<Image source ={require('../images/tiger.png')}/>
+							<Text style={{fontSize:20}}>It feels so empty</Text>
 						</ScrollView>
 					</View>
 					<View style={styles.fixedButton}>

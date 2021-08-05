@@ -2,6 +2,7 @@
 const ExpenseSchema = {
 	name: 'Expense',
 	properties: {
+		uuid: {type: 'string'},
 		name:  {type: 'string', default: null},
 		currency: {type: 'string', default: '€'},
 		value: {type: 'double', default: null},

@@ -8,6 +8,8 @@ import {Text} from 'react-native-elements';
 import { TextInput, Button} from 'react-native-paper';
 import { StackActions } from '@react-navigation/native';
 import NavigationService from '../utils/NavigationService';
+import { v4 as uuidv4 } from 'uuid';
+
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
@@ -35,7 +37,7 @@ export default class Home extends React.Component {
 		Realm.open({schema: [ExpenseSchema]})
 		.then(realm => {
 			realm.write(() => {
-				realm.create('Expense', {name: name, currency: currency, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear(), cDate: date});
+				realm.create('Expense', {uuid: uuidv4(), name: name, currency: currency, value: value, day: date.getDate(), month: date.getUTCMonth(), year: date.getFullYear(), cDate: date});
 			});
 		});
 		this.props.navigation.goBack();

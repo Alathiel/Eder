@@ -8,11 +8,13 @@ import NavigationService from './NavigationService';
 //screens
 import home from '../screens/home';
 import add from '../screens/add';
+import edit from '../screens/edit';
 
 const AppStack = createStackNavigator(
   {
     Home: home,
 	AddExpense: add,
+	EditExpense: edit,
   },
   {
     initialRouteName: 'Home',
