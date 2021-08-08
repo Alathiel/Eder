@@ -16,7 +16,7 @@ import {
 		Image,
 	} from 'react-native';
 import {Icon, Text, Divider} from 'react-native-elements';
-import { List } from 'react-native-paper';
+import { List, Button, Card, Title} from 'react-native-paper';
 
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
@@ -74,42 +74,48 @@ export default class Home extends React.Component {
 		if(this.state.render){
 			if(this.state.realm.objects('Expense').length > 0){
 				return(<>
-					<ScrollView locked={true} style={styles.list}
+					<ScrollView locked={true} style={styles.list} stickyHeaderIndices={[0]}
 						refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 					>
+						<Card containerStyle={{borderRadius:30}}>
+							<Card.Content>
+								<Title>Total spent in {(new Date).getFullYear()}: {this.state.realm.objects('Expense')[0].currency}{parseFloat(this.state.realm.objects('Expense').filtered('year =' + (new Date).getFullYear()).sum('value')).toFixed(2)}</Title>
+							</Card.Content>
+							<Card.Actions style={{flexDirection: "row-reverse",}}>
+								<Button onPress = {() => {this.props.navigation.navigate('Expenses_list')}}>View More</Button>
+							</Card.Actions>
+						</Card>
 						{
-							this.state.realm.objects('Expense').filtered('TRUEPREDICATE SORT(year DESC) DISTINCT(year)').map((y, i) => (
-								this.state.realm.objects('Expense').filtered('year=' + y.year + ' SORT(month DESC) DISTINCT(month)').map((x, i) => (
-									<List.Section>
-										<List.Subheader>Expenses in {months[x.month] + '	' + x.year}</List.Subheader>
-										{
-											this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year + ' SORT(cDate DESC)').map((l, ind) => (
-												<List.Item
-													title= {l.name}
-													description= {l.currency + l.value}
-													left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
-													right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
-													onPress={() => {
-														try{
-															this.props.navigation.navigate('EditExpense', {uuid: l.uuid, name: l.name, value: l.value, currency: l.currency});
-														}catch(error){
-															if (Platform.OS === 'android') {
-																ToastAndroid.show('The Expense not exist, try to reload', ToastAndroid.SHORT);
-															} else {
-																AlertIOS.alert('The Expense not exist, try to reload');
-															}
+							this.state.realm.objects('Expense').filtered('year=' + (new Date).getFullYear() + ' SORT(month DESC) DISTINCT(month)').map((x, i) => (
+								<List.Section>
+									<List.Subheader>Expenses in {months[x.month] + '	' + x.year}</List.Subheader>
+									{
+										this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + x.year + ' SORT(cDate DESC)').map((l, ind) => (
+											<List.Item
+												title= {l.name}
+												description= {l.currency + l.value}
+												left={props => <Icon {...props} name='money-check-alt' type='font-awesome-5'  style = {styles.list_icon}/>}
+												right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
+												onPress={() => {
+													try{
+														this.props.navigation.navigate('EditExpense', {uuid: l.uuid, name: l.name, value: l.value, currency: l.currency});
+													}catch(error){
+														if (Platform.OS === 'android') {
+															ToastAndroid.show('The Expense not exist, try to reload', ToastAndroid.SHORT);
+														} else {
+															AlertIOS.alert('The Expense not exist, try to reload');
 														}
-													}}
-													onLongPress ={(value) => {console.log(value)}}
-												/>
-											))
-										}
-										<List.Subheader style={{textAlign:'right'}}>
-											Total Spent {x.currency + parseFloat(this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + y.year).sum('value')).toFixed(2)}
-										</List.Subheader>
-										<Divider/>
-									</List.Section>
-								))
+													}
+												}}
+												onLongPress ={(value) => {console.log(value)}}
+											/>
+										))
+									}
+									<List.Subheader style={{textAlign:'right'}}>
+										Total Spent {x.currency + parseFloat(this.state.realm.objects('Expense').filtered('month =' + x.month + ' AND year=' + x.year).sum('value')).toFixed(2)}
+									</List.Subheader>
+									<Divider/>
+								</List.Section>
 							))
 						}
 					</ScrollView>

@@ -24,24 +24,6 @@ module.exports = StyleSheet.create({
 		maxHeight: '99%',
 	},
 
-	footer:{
-		maxHeight:'8%',
-		minHeight: '8%',
-		minWidth: '100%',
-		maxWidth: '100%',
-		backgroundColor: '#0000ff',
-	},
-
-	overlay:{
-		minWidth: '90%',
-		maxWidth:'90%',
-		minHeight:'70%',
-		maxHeight:'70%',
-		borderRadius:20,
-		flexWrap:'wrap',
-		justifyContent: 'space-between',
-	},
-
 	fixedButton: {
 		position:'absolute',
 		bottom: 30,

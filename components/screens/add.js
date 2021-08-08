@@ -6,8 +6,6 @@ import {View, BackHandler} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Text} from 'react-native-elements';
 import { TextInput, Button} from 'react-native-paper';
-import { StackActions } from '@react-navigation/native';
-import NavigationService from '../utils/NavigationService';
 import { v4 as uuidv4 } from 'uuid';
 
 const Realm = require('realm');
