@@ -43,7 +43,7 @@ export default class expenses_list extends React.Component {
 				Realm.open({schema: [ExpenseSchema]})
 				.then(realm => {
 					resolve(this.setState({ realm:realm }));
-				});}, 2000);
+				});}, 100);
 		});
 	}
 

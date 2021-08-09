@@ -4,6 +4,7 @@
 /* eslint-disable keyword-spacing */
 /* eslint-disable prettier/prettier */
 import React from 'react';
+import { TouchableHighlight } from 'react-native';
 import {
 		View,
 		ScrollView,
@@ -36,14 +37,16 @@ export default class Home extends React.Component {
 		this.loadDatas();
     }
 
-	/*static navigationOptions = ({navigation}) => {
+	static navigationOptions = ({navigation}) => {
 		return{
-			headerTitle: '',
-			headerLeft: () => (
-				<Text>Eder</Text>
+			headerTitle: 'Eder',
+			headerRight: () => (
+				<TouchableHighlight onPress={() => {navigation.navigate('Settings')}}>
+					<Icon name='settings' type='material-icons' style={{paddingRight:13}}/>
+				</TouchableHighlight>
 			),
 		};
-	};*/
+	};
 
 	forceRemount = () => {
         this.setState(({ reload }) => ({
@@ -57,7 +60,7 @@ export default class Home extends React.Component {
 				Realm.open({schema: [ExpenseSchema]})
 				.then(realm => {
 					resolve(this.setState({ realm:realm }));
-				});}, 2000);
+				});}, 1000);
 		});
 	}
 

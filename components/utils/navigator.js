@@ -11,6 +11,7 @@ import add from '../screens/add';
 import edit from '../screens/edit';
 import expenses_list from '../screens/expenses_list';
 import details from '../screens/details';
+import settings from '../screens/settings';
 
 const AppStack = createStackNavigator(
 	{
@@ -71,6 +72,20 @@ const AppStack = createStackNavigator(
 			screen: details,
 			navigationOptions:{
 				title: '',
+				headerStyle: {
+					position: 'absolute',
+					backgroundColor: 'transparent',
+					elevation: 0,
+					shadowOpacity: 0,
+					borderBottomWidth: 0,
+				},
+			},
+		},
+
+		Settings:{
+			screen: settings,
+			navigationOptions:{
+				title: 'Settings',
 				headerStyle: {
 					position: 'absolute',
 					backgroundColor: 'transparent',
