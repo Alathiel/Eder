@@ -10,6 +10,7 @@ import home from '../screens/home';
 import add from '../screens/add';
 import edit from '../screens/edit';
 import expenses_list from '../screens/expenses_list';
+import details from '../screens/details';
 
 const AppStack = createStackNavigator(
 	{
@@ -54,6 +55,20 @@ const AppStack = createStackNavigator(
 		},
 		Expenses_list:{
 			screen: expenses_list,
+			navigationOptions:{
+				title: '',
+				headerStyle: {
+					position: 'absolute',
+					backgroundColor: 'transparent',
+					elevation: 0,
+					shadowOpacity: 0,
+					borderBottomWidth: 0,
+				},
+			},
+		},
+
+		Year_details:{
+			screen: details,
 			navigationOptions:{
 				title: '',
 				headerStyle: {
