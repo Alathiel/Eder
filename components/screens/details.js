@@ -64,7 +64,7 @@ export default class details extends React.Component {
 		if(this.state.render){
 			if(this.state.realm.objects('Expense').length > 0){
 				return(<>
-					<ScrollView locked={true} style={styles.list} stickyHeaderIndices={[0]}
+					<ScrollView locked={true} style={styles.list}
 						refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
 					>
 						{
