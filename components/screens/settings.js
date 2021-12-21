@@ -12,14 +12,12 @@ import {
 		AlertIOS,
 	} from 'react-native';
 import { List, Button, Icon} from 'react-native-paper';
-import {} from 'react-native-elements'
+import { months } from '../utils/constants';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
-var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-
 
 const expToPDF = async (options) => {
 	try {

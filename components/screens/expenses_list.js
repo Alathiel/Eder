@@ -14,6 +14,7 @@ import {
 		Platform,
 	} from 'react-native';
 import {Button, Card, Title} from 'react-native-paper';
+import { realm_version } from '../utils/constants';
 
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
@@ -40,7 +41,7 @@ export default class expenses_list extends React.Component {
 	loadRealmDatas(){
 		return new Promise((resolve,regect) => {
 			setTimeout(() => {
-				Realm.open({schema: [ExpenseSchema]})
+				Realm.open({schema: [ExpenseSchema], schemaVersion: realm_version})
 				.then(realm => {
 					resolve(this.setState({ realm:realm }));
 				});}, 100);

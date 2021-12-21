@@ -16,11 +16,11 @@ import {
 	} from 'react-native';
 import {Icon, Text, Divider} from 'react-native-elements';
 import {List} from 'react-native-paper';
+import {months, realm_version} from '../utils/constants'
 
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
-var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export default class details extends React.Component {
     constructor(props) {
@@ -44,7 +44,7 @@ export default class details extends React.Component {
 	loadRealmDatas(){
 		return new Promise((resolve,regect) => {
 			setTimeout(() => {
-				Realm.open({schema: [ExpenseSchema]})
+				Realm.open({schema: [ExpenseSchema], schemaVersion: realm_version})
 				.then(realm => {
 					resolve(this.setState({ realm:realm }));
 				});}, 100);

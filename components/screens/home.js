@@ -3,7 +3,8 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable keyword-spacing */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+
+import React from "react"; 
 import { TouchableHighlight } from 'react-native';
 import {
 		View,
@@ -17,14 +18,15 @@ import {
 		Image,
 	} from 'react-native';
 import {Icon, Text, Divider} from 'react-native-elements';
-import { List, Button, Card, Title} from 'react-native-paper';
+import {List, Button, Card, Title} from 'react-native-paper';
+import {months, realm_version} from '../utils/constants'
 
 const Realm = require('realm');
 import {ExpenseSchema} from '../utils/schemas';
 import styles from '../utils/style';
-var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export default class Home extends React.Component {
+	
     constructor(props) {
         super(props);
         this.state = {
@@ -57,7 +59,7 @@ export default class Home extends React.Component {
 	loadRealmDatas(){
 		return new Promise((resolve,regect) => {
 			setTimeout(() => {
-				Realm.open({schema: [ExpenseSchema]})
+				Realm.open({schema: [ExpenseSchema], schemaVersion: realm_version})
 				.then(realm => {
 					resolve(this.setState({ realm:realm }));
 				});}, 1000);
@@ -76,6 +78,7 @@ export default class Home extends React.Component {
 	DynamicRender(){
 		if(this.state.render){
 			if(this.state.realm.objects('Expense').length > 0){
+				const { open, value, items } = this.state;
 				return(<>
 					<ScrollView locked={true} style={styles.list} stickyHeaderIndices={[0]}
 						refreshControl = { <RefreshControl refreshing={this.state.refresh} onRefresh={this.loadDatas}/>}
@@ -101,7 +104,7 @@ export default class Home extends React.Component {
 												right={props => <Text style = {{paddingTop:10, textAlign:'center'}}>{months[l.month] + '\n' + l.day}</Text>}
 												onPress={() => {
 													try{
-														this.props.navigation.navigate('EditExpense', {uuid: l.uuid, name: l.name, value: l.value, currency: l.currency});
+														this.props.navigation.navigate('EditExpense', {uuid: l.uuid, name: l.name, value: l.value, currency: l.currency, category: l.category});
 													}catch(error){
 														if (Platform.OS === 'android') {
 															ToastAndroid.show('The Expense not exist, try to reload', ToastAndroid.SHORT);

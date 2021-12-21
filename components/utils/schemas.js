@@ -10,6 +10,7 @@ const ExpenseSchema = {
 		month: {type: 'int', default: 0},
 		year: {type: 'int', default: 0},
 		cDate: {type: 'date'},
+		category: {type:'string', default:'Other'},
 	},
 };
 
